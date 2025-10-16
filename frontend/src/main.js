@@ -12,3 +12,12 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+
+// Auto-detect dark mode from user's system preference
+try {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    vuetify.framework.theme.dark = true;
+  }
+} catch (e) {
+  // Silently fail if matchMedia is not supported
+}
