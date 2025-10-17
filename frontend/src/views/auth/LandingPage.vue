@@ -1,5 +1,65 @@
 <template>
   <div style="width: 100%">
+    <!-- Navigation Drawer for Mobile -->
+    <v-navigation-drawer v-model="drawer" app temporary right>
+      <v-list dense nav class="py-5">
+        <v-list-item v-for="item in navItems" :key="item.title" @click="scrollTo(item.target)">
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title class="font-weight-medium">{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider class="my-3"></v-divider>
+
+        <v-list-item class="px-6">
+           <v-btn block text color="primary" class="font-weight-bold">Login</v-btn>
+        </v-list-item>
+        <v-list-item class="px-6">
+           <v-btn block depressed :style="{ background: gradient, color: 'white' }" class="font-weight-bold">Register</v-btn>
+        </v-list-item>
+         <v-list-item class="mt-4 d-flex justify-center">
+            <v-switch
+              v-model="$vuetify.theme.dark"
+              inset
+              hide-details
+              label="Dark Mode"
+              color="secondary"
+            ></v-switch>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <!-- Main App Bar -->
+    <v-app-bar app fixed flat elevate-on-scroll :color="$vuetify.theme.dark ? 'surface' : 'white'" class="px-md-4">
+       <v-toolbar-title class="font-weight-bold text-h5" :style="gradientTextStyle" @click="scrollTo('#home')" style="cursor: pointer;">
+        AlumniLink
+      </v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <!-- Desktop Navigation Buttons -->
+      <div class="hidden-sm-and-down">
+        <v-btn v-for="item in navItems" :key="item.title" text @click="scrollTo(item.target)" class="font-weight-bold mx-1" :class="textColor.slice(0, -5)">
+          {{ item.title }}
+        </v-btn>
+        <v-btn text color="primary" class="font-weight-bold ml-2" :to="{ name: 'Login' }">Login</v-btn>
+        <v-btn depressed :style="{ background: gradient, color: 'white' }" class="font-weight-bold ml-2 rounded-lg" :to="{ name: 'Register' }">Register</v-btn>
+         <v-switch
+          v-model="$vuetify.theme.dark"
+          inset
+          hide-details
+          color="secondary"
+          class="ml-4"
+        ></v-switch>
+      </div>
+
+      <!-- Mobile Menu Icon -->
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="hidden-md-and-up"></v-app-bar-nav-icon>
+    </v-app-bar>
+
     <!-- Hero Section -->
     <section id="home" :style="{ background: gradient }" class="d-flex align-center" style="min-height: 100vh;">
       <v-container class="text-center white--text py-16">
@@ -12,15 +72,14 @@
               The ultimate platform to bridge the gap between alumni, students, and your institution.
             </p>
             <div class="mt-8">
-              <v-btn x-large color="accent" dark class="font-weight-bold ma-2" depressed>
+              <v-btn x-large color="accent" class="black--text font-weight-bold ma-2 rounded-lg" depressed>
                 <v-icon left>mdi-account-tie</v-icon>
                 Join as Alumni
               </v-btn>
-              <v-btn x-large outlined dark class="font-weight-bold ma-2">
+              <v-btn x-large outlined dark class="font-weight-bold ma-2 rounded-lg">
                  <v-icon left>mdi-school</v-icon>
                 Join as Student
               </v-btn>
-              <v-btn text color="white" class="font-weight-bold ml-2 mt-4 d-block mx-auto">Login</v-btn>
             </div>
           </v-col>
         </v-row>
@@ -32,7 +91,7 @@
       <v-container>
         <v-row justify="center">
           <v-col cols="12" md="8" class="text-center">
-            <h2 class="text-h4 font-weight-bold mb-3" :class="textColor">What is AlumniLink?</h2>
+            <h2 class="text-h4 font-weight-bold mb-3" :class="textColor">{{ 'What is AlumniLink?'.toUpperCase() }}</h2>
             <div class="mx-auto" :style="{ height: '4px', width: '80px', background: gradient }"></div>
             <p class="text-body-1 mt-6" :class="textSecondaryColor">
               AlumniLink is a comprehensive management platform designed to build a powerful and engaged community for your institution. We provide a dedicated space for alumni to reconnect, students to find mentors, and the institute to foster lifelong relationships. It's more than a network; it's a thriving ecosystem for growth, support, and shared success by creating a strong alumni and student community.
@@ -47,7 +106,7 @@
       <v-container>
         <v-row justify="center">
           <v-col cols="12" class="text-center">
-            <h2 class="text-h4 font-weight-bold mb-3" :class="textColor">A Platform Built for Connection</h2>
+            <h2 class="text-h4 font-weight-bold mb-3" :class="textColor">{{ 'A Platform Built for Connection'.toUpperCase() }}</h2>
             <div class="mx-auto" :style="{ height: '4px', width: '80px', background: gradient }"></div>
           </v-col>
         </v-row>
@@ -62,8 +121,8 @@
           <v-tab-item>
             <v-row>
               <v-col v-for="feature in alumniFeatures" :key="feature.title" cols="12" sm="6" md="4">
-                <v-card class="text-center pa-4 fill-height" flat :color="$vuetify.theme.dark ? 'surface' : 'white'" outlined>
-                  <v-icon large :style="gradientTextStyle">{{ feature.icon }}</v-icon>
+                <v-card class="text-center pa-6 fill-height rounded-xl" flat :color="$vuetify.theme.dark ? '#1E2430' : 'white'" outlined>
+                  <v-icon x-large :style="gradientTextStyle">{{ feature.icon }}</v-icon>
                   <h3 class="text-h6 font-weight-bold mt-4 mb-2" :class="textColor">{{ feature.title }}</h3>
                   <p class="text-body-2" :class="textSecondaryColor">{{ feature.desc }}</p>
                 </v-card>
@@ -75,8 +134,8 @@
           <v-tab-item>
             <v-row>
               <v-col v-for="feature in studentFeatures" :key="feature.title" cols="12" sm="6" md="4">
-                <v-card class="text-center pa-4 fill-height" flat :color="$vuetify.theme.dark ? 'surface' : 'white'" outlined>
-                   <v-icon large :style="gradientTextStyle">{{ feature.icon }}</v-icon>
+                <v-card class="text-center pa-6 fill-height rounded-xl" flat :color="$vuetify.theme.dark ? '#1E2430' : 'white'" outlined>
+                   <v-icon x-large :style="gradientTextStyle">{{ feature.icon }}</v-icon>
                   <h3 class="text-h6 font-weight-bold mt-4 mb-2" :class="textColor">{{ feature.title }}</h3>
                   <p class="text-body-2" :class="textSecondaryColor">{{ feature.desc }}</p>
                 </v-card>
@@ -87,21 +146,25 @@
       </v-container>
     </section>
 
-     <!-- Footer -->
-    <v-footer class="py-6" :color="$vuetify.theme.dark ? '#000' : 'grey lighten-4'">
-      <v-container class="text-center">
-        <p class="mb-0" :class="textSecondaryColor">
-          &copy; {{ new Date().getFullYear() }} AlumniLink. All Rights Reserved.
-        </p>
-      </v-container>
-    </v-footer>
+    <the-footer />
   </div>
 </template>
 
 <script>
+import TheFooter from '@/components/layout/TheFooter.vue';
+
+
 export default {
   name: 'LandingPage',
+  components: {
+    TheFooter,
+  },
   data: () => ({
+    drawer: false,
+    navItems: [
+      { title: 'About', icon: 'mdi-information-outline', target: '#about' },
+      { title: 'Features', icon: 'mdi-star-outline', target: '#features' },
+    ],
     tab: 0,
     alumniFeatures: [
       { icon: 'mdi-view-dashboard', title: 'Alumni Dashboard', desc: 'A central hub to manage your profile, connections, and activities.' },
@@ -137,11 +200,21 @@ export default {
       };
     },
     textColor() {
-      return this.$vuetify.theme.dark ? 'white--text' : 'black--text';
+      return this.$vuetify.theme.dark ? 'textPrimary--text' : 'textPrimary--text';
     },
     textSecondaryColor() {
-      return this.$vuetify.theme.dark ? 'grey--text text--lighten-1' : 'grey--text text--darken-2';
+      return this.$vuetify.theme.dark ? 'textSecondary--text' : 'textSecondary--text';
     }
+  },
+  methods: {
+    scrollTo(target) {
+      this.drawer = false; // Close drawer on mobile after click
+      this.$vuetify.goTo(target, {
+        duration: 500,
+        easing: 'easeInOutCubic',
+      });
+    },
   },
 };
 </script>
+

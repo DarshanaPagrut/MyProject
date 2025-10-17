@@ -2,6 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // Import the new LandingPage view
 import LandingPage from '../views/auth/LandingPage.vue'
+import AuthLayout from '../layouts/AuthLayout.vue'
+import LoginPage from '../views/auth/Login.vue'
+import RegisterPage from '../views/auth/Register.vue'
 
 Vue.use(VueRouter)
 
@@ -12,12 +15,29 @@ const routes = [
     component: LandingPage
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/auth',
+    component: AuthLayout,
+    children: [
+      {
+        path: 'login', // Relative path
+        name: 'Login',
+        component: LoginPage,
+      },
+      {
+        path: 'register', // Relative path
+        name: 'Register',
+        component: RegisterPage,
+      }
+    ]
+  },
+  // Fallback for direct access to /login and /register
+  {
+    path: '/login',
+    redirect: '/auth/login'
+  },
+  {
+    path: '/register',
+    redirect: '/auth/register'
   }
 ]
 
@@ -28,3 +48,4 @@ const router = new VueRouter({
 })
 
 export default router
+
